@@ -24,7 +24,8 @@ const startDB = async () => {
     await connectDB(mongoDBConnection)
     console.log('connection to mongodb atlas ...')
     app.listen(port, console.log(`server is listening on port ${port}...`))
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
   }
 }
