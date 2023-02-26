@@ -4,7 +4,7 @@ const carSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'car name must be provided'],
-    maxlength: [20, 'name must be less than 15 characters']
+    maxlength: [20, 'name must be less than 20 characters']
   },
   price: {
     type: Number,

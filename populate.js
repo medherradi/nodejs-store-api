@@ -1,6 +1,6 @@
 require('dotenv').config()
 const connectDB = require('./db/connect')
-const Car = require('./models/car')
+const Car = require('./models/carModel')
 const jsonCars = require('./cars.json')
 
 const populateDB = async () => {
