@@ -1,7 +1,10 @@
+const Car = require('../models/carModel')
 
 
 const getAllCars = async (req, res) => {
-  res.status(200).json({ msg: 'we got all cars' })
+  console.log(req.query)
+  const cars = await Car.find({})
+  res.status(200).json({ count: cars.length, cars })
 }
 
 const postCar = async (req, res) => {
@@ -9,7 +12,9 @@ const postCar = async (req, res) => {
 }
 
 const getSingleCar = async (req, res) => {
-  res.status(200).json({ msg: 'we got a single car' })
+  const { id } = req.params
+  const car = await Car.findById({ _id: id })
+  res.status(200).json({ car })
 }
 
 

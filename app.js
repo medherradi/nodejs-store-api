@@ -1,8 +1,10 @@
 require('dotenv').config()
+require('express-async-errors')
 const express = require('express')
 const connectDB = require('./db/connect')
 const notFound = require('./middleware/not-found')
 const errorHandler = require('./middleware/error-handler')
+const carsRouter = require('./routes/carsRouter')
 const app = express()
 
 const mongoDBConnection = process.env.MONGODB_CONNECTION
@@ -10,7 +12,8 @@ const mongoDBConnection = process.env.MONGODB_CONNECTION
 app.use(express.json())
 
 
-
+// routes
+app.use('/api/cars', carsRouter)
 
 app.use('*', notFound)
 
