@@ -2,7 +2,7 @@ const Car = require('../models/carModel')
 
 
 const getAllCars = async (req, res) => {
-  const { name, company } = req.query
+  const { name, company, sort } = req.query
   const objQuery = {}
   if (name) {
     objQuery.name = { $regex: name, $options: 'i' }
@@ -10,7 +10,14 @@ const getAllCars = async (req, res) => {
   if (company) {
     objQuery.company = { $regex: company, $options: 'i' }
   }
-  const cars = await Car.find(objQuery).sort('name')
+  let data = Car.find(objQuery)
+  if (sort) {
+    const sortFields = sort.split(',').join(' ')
+    data = data.sort(sortFields)
+  } else {
+    data = data.sort('name')
+  }
+  const cars = await data
   if (cars.length < 1) {
     return res.status(200).json({ count: cars.length, msg: 'no cars to display' })
   }
