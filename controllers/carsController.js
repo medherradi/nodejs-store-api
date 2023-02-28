@@ -10,6 +10,27 @@ const getAllCars = async (req, res) => {
   if (company) {
     objQuery.company = { $regex: company, $options: 'i' }
   }
+  if (numericFilters) {
+    console.log(numericFilters)
+    const objMapping = {
+      '>': '$gt',
+      '<': '$lt',
+      '>=': '$gte',
+      '<=': '$lte',
+      '=': '$eq'
+    }
+    const regEx = /\b(>|<|>=|<=|=)\b/g
+    let replaceString = numericFilters.replace(regEx, (ele) => {
+      return `-${objMapping[ele]}-`
+    })
+    const options = ['price', 'rating']
+    replaceString = replaceString.split(',').map((ele) => {
+      const [field, operator, value] = ele.split('-')
+      if (options.includes(field)) {
+        objQuery[field] = { [operator]: Number(value) }
+      }
+    })
+  }
   let data = Car.find(objQuery)
   if (sort) {
     const sortFields = sort.split(',').join(' ')
@@ -21,29 +42,7 @@ const getAllCars = async (req, res) => {
     const numLimit = Number(limit)
     data = data.limit(numLimit)
   }
-  if (numericFilters) {
-    console.log(numericFilters)
-    const objMapping = {
-      '>': '$gt',
-      '<': '$lt',
-      '>=': '$gte',
-      '<=': '$lte',
-      '=': '$eq'
-    }
-    const regEx = /\b(>|<|>=|<=|=)\b/g
-    const replaceString = numericFilters.replace(regEx, (ele) => {
-      return `-${objMapping[ele]}-`
-    })
-    const replaceList = replaceString.split(',')
-    console.log(replaceList)
-    const newreplacing = replaceList.map((ele) => {
-      const newEle = ele.split('-')
-      const newFil = `${newEle[0]}:{${newEle[1]}:${Number(newEle[2])}}`
-      return newFil
-    })
-    const finalForm = `{${newreplacing[0]},${newreplacing[1]}}`
-    data = data.find(finalForm)
-  }
+  console.log(objQuery)
   const cars = await data
   if (cars.length < 1) {
     return res.status(200).json({ count: cars.length, msg: 'no cars to display' })
